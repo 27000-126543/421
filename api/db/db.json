@@ -1,0 +1,1042 @@
+{
+  "players": [
+    {
+      "id": "player-1",
+      "nickname": "梦境旅人",
+      "avatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-1",
+      "level": 11,
+      "exp": 4502,
+      "coins": 16933,
+      "dreamFragments": 481,
+      "arenaPoints": 1250,
+      "createdAt": "2026-05-25T07:27:39.379Z"
+    },
+    {
+      "id": "player-2",
+      "nickname": "星辰编织者",
+      "avatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-2",
+      "level": 2,
+      "exp": 9672,
+      "coins": 67226,
+      "dreamFragments": 121,
+      "arenaPoints": 1308,
+      "createdAt": "2026-05-26T15:59:00.264Z"
+    },
+    {
+      "id": "player-3",
+      "nickname": "深渊漫步者",
+      "avatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-3",
+      "level": 33,
+      "exp": 895,
+      "coins": 83105,
+      "dreamFragments": 36,
+      "arenaPoints": 1491,
+      "createdAt": "2026-05-26T09:18:06.741Z"
+    },
+    {
+      "id": "player-4",
+      "nickname": "时光守护者",
+      "avatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-4",
+      "level": 13,
+      "exp": 4933,
+      "coins": 4259,
+      "dreamFragments": 463,
+      "arenaPoints": 2186,
+      "createdAt": "2026-06-08T13:58:57.996Z"
+    },
+    {
+      "id": "player-5",
+      "nickname": "幻境画师",
+      "avatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-5",
+      "level": 2,
+      "exp": 9859,
+      "coins": 17749,
+      "dreamFragments": 367,
+      "arenaPoints": 1038,
+      "createdAt": "2026-05-23T08:27:32.078Z"
+    },
+    {
+      "id": "guest-8vqhuzpi5cg",
+      "nickname": "游客_jt2nwo",
+      "avatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=guest-8vqhuzpi5cg",
+      "level": 1,
+      "exp": 0,
+      "coins": 1000,
+      "dreamFragments": 50,
+      "arenaPoints": 1000,
+      "createdAt": "2026-06-11T12:01:40.197Z"
+    }
+  ],
+  "weavers": [
+    {
+      "id": "weaver-qyoecbdogm",
+      "playerId": "player-1",
+      "name": "梦语者·艾琳",
+      "rarity": "common",
+      "level": 3,
+      "exp": 2465,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=weaver-0",
+      "skills": [
+        {
+          "id": "skill-y4omw3vfzq",
+          "name": "稳定之手",
+          "description": "提升梦境属性",
+          "type": "stability",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "id": "weaver-43ayw5ddyt8",
+      "playerId": "player-1",
+      "name": "星织者·卡洛斯",
+      "rarity": "common",
+      "level": 12,
+      "exp": 1861,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=weaver-1",
+      "skills": [
+        {
+          "id": "skill-oyktmdu893",
+          "name": "词缀感应",
+          "description": "提升梦境属性",
+          "type": "stability",
+          "value": 13
+        }
+      ]
+    },
+    {
+      "id": "weaver-lxbep2j5pk9",
+      "playerId": "player-1",
+      "name": "深渊编织者·莫娜",
+      "rarity": "rare",
+      "level": 5,
+      "exp": 4180,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=weaver-2",
+      "skills": [
+        {
+          "id": "skill-bqk90hwotyb",
+          "name": "梦境编织",
+          "description": "提升梦境属性",
+          "type": "stability",
+          "value": 13
+        }
+      ]
+    },
+    {
+      "id": "weaver-h1q3ckwmkx6",
+      "playerId": "player-1",
+      "name": "时光裁缝·菲尼克斯",
+      "rarity": "rare",
+      "level": 28,
+      "exp": 2883,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=weaver-3",
+      "skills": [
+        {
+          "id": "skill-d51st1n8r0v",
+          "name": "梦境编织",
+          "description": "提升梦境属性",
+          "type": "stability",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "id": "weaver-k1378gfwlrh",
+      "playerId": "player-1",
+      "name": "幻境画师·莉莉丝",
+      "rarity": "epic",
+      "level": 9,
+      "exp": 4009,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=weaver-4",
+      "skills": [
+        {
+          "id": "skill-vvwg1k9qsjg",
+          "name": "稳定之手",
+          "description": "提升梦境属性",
+          "type": "affix_chance",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "id": "weaver-mdvseyolozf",
+      "playerId": "player-2",
+      "name": "梦魇铸造师·德拉科",
+      "rarity": "legendary",
+      "level": 27,
+      "exp": 3108,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=weaver-5",
+      "skills": [
+        {
+          "id": "skill-mdaj515rm6",
+          "name": "梦境编织",
+          "description": "提升梦境属性",
+          "type": "experience",
+          "value": 11
+        }
+      ]
+    },
+    {
+      "id": "weaver-1og9phkj7wbj",
+      "playerId": "player-2",
+      "name": "记忆织网者·索菲亚",
+      "rarity": "epic",
+      "level": 17,
+      "exp": 2187,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=weaver-6",
+      "skills": [
+        {
+          "id": "skill-g5d0pdktka",
+          "name": "词缀感应",
+          "description": "提升梦境属性",
+          "type": "stability",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "id": "weaver-1q5bapz4twi",
+      "playerId": "player-2",
+      "name": "潜意识园丁·奥利弗",
+      "rarity": "legendary",
+      "level": 7,
+      "exp": 4202,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=weaver-7",
+      "skills": [
+        {
+          "id": "skill-i55zxolxp4",
+          "name": "稳定之手",
+          "description": "提升梦境属性",
+          "type": "stability",
+          "value": 5
+        }
+      ]
+    }
+  ],
+  "dreams": [
+    {
+      "id": "dream-hzgpombw3j",
+      "ownerId": "player-1",
+      "name": "记忆花园·梦境",
+      "description": "这是由梦境旅人编织的神秘梦境，充满了未知与惊喜...",
+      "theme": "记忆花园",
+      "weaverIds": [
+        "weaver-h78ffcstv4h",
+        "weaver-znf6duheqs9",
+        "weaver-tnm7aw9ktp"
+      ],
+      "elementIds": [
+        "elem-9",
+        "elem-8",
+        "elem-7",
+        "elem-6",
+        "elem-5"
+      ],
+      "stability": 36,
+      "experienceScore": 99,
+      "affixes": [],
+      "complexity": 74,
+      "isPublic": true,
+      "visitorCount": 394,
+      "favoriteCount": 388,
+      "createdAt": "2026-06-05T12:27:39.302Z"
+    },
+    {
+      "id": "dream-qhim6ltpt0l",
+      "ownerId": "player-2",
+      "name": "恐惧深渊·梦境",
+      "description": "这是由星辰编织者编织的神秘梦境，充满了未知与惊喜...",
+      "theme": "恐惧深渊",
+      "weaverIds": [
+        "weaver-zkro5aquic",
+        "weaver-9p5sz8rvs1"
+      ],
+      "elementIds": [
+        "elem-3",
+        "elem-4",
+        "elem-5",
+        "elem-9",
+        "elem-1"
+      ],
+      "stability": 58,
+      "experienceScore": 100,
+      "affixes": [
+        "nightmare",
+        "chaotic"
+      ],
+      "complexity": 45,
+      "isPublic": false,
+      "visitorCount": 442,
+      "favoriteCount": 495,
+      "createdAt": "2026-06-06T20:21:20.463Z"
+    },
+    {
+      "id": "dream-e9rpis4etqa",
+      "ownerId": "player-3",
+      "name": "星辰之海·幻境",
+      "description": "这是由深渊漫步者编织的神秘梦境，充满了未知与惊喜...",
+      "theme": "星辰之海",
+      "weaverIds": [
+        "weaver-6s27pdgsalf",
+        "weaver-uuv0zm5apx"
+      ],
+      "elementIds": [
+        "elem-4",
+        "elem-5",
+        "elem-1"
+      ],
+      "stability": 48,
+      "experienceScore": 77,
+      "affixes": [],
+      "complexity": 50,
+      "isPublic": true,
+      "visitorCount": 573,
+      "favoriteCount": 101,
+      "createdAt": "2026-06-10T04:24:18.414Z"
+    },
+    {
+      "id": "dream-xarj3mfw87e",
+      "ownerId": "player-4",
+      "name": "时光回廊·奇境",
+      "description": "这是由时光守护者编织的神秘梦境，充满了未知与惊喜...",
+      "theme": "时光回廊",
+      "weaverIds": [
+        "weaver-9cpj4r4y3s"
+      ],
+      "elementIds": [
+        "elem-6",
+        "elem-4",
+        "elem-8"
+      ],
+      "stability": 11,
+      "experienceScore": 69,
+      "affixes": [],
+      "complexity": 34,
+      "isPublic": true,
+      "visitorCount": 208,
+      "favoriteCount": 108,
+      "createdAt": "2026-06-07T13:37:28.579Z"
+    },
+    {
+      "id": "dream-869uqxb2ib7",
+      "ownerId": "player-5",
+      "name": "欲望迷宫·秘境",
+      "description": "这是由幻境画师编织的神秘梦境，充满了未知与惊喜...",
+      "theme": "欲望迷宫",
+      "weaverIds": [
+        "weaver-aj8ceeh2ml",
+        "weaver-562edv2tanf"
+      ],
+      "elementIds": [
+        "elem-4",
+        "elem-7",
+        "elem-12"
+      ],
+      "stability": 35,
+      "experienceScore": 84,
+      "affixes": [
+        "lucid"
+      ],
+      "complexity": 52,
+      "isPublic": true,
+      "visitorCount": 835,
+      "favoriteCount": 188,
+      "createdAt": "2026-06-04T19:01:03.444Z"
+    },
+    {
+      "id": "dream-4k7k7ie0cf",
+      "ownerId": "player-1",
+      "name": "遗忘废墟·幻境",
+      "description": "这是由梦境旅人编织的神秘梦境，充满了未知与惊喜...",
+      "theme": "遗忘废墟",
+      "weaverIds": [
+        "weaver-omjpyoqksdl"
+      ],
+      "elementIds": [
+        "elem-8",
+        "elem-3",
+        "elem-9",
+        "elem-2",
+        "elem-11"
+      ],
+      "stability": 41,
+      "experienceScore": 85,
+      "affixes": [
+        "lucid",
+        "stable"
+      ],
+      "complexity": 41,
+      "isPublic": true,
+      "visitorCount": 25,
+      "favoriteCount": 373,
+      "createdAt": "2026-06-05T17:38:03.099Z"
+    },
+    {
+      "id": "dream-q0v4ho2uj7",
+      "ownerId": "player-2",
+      "name": "永恒梦境·奇境",
+      "description": "这是由星辰编织者编织的神秘梦境，充满了未知与惊喜...",
+      "theme": "永恒梦境",
+      "weaverIds": [
+        "weaver-zdr5o9cznas",
+        "weaver-9wg5tef1zz",
+        "weaver-pn887vzfb3"
+      ],
+      "elementIds": [
+        "elem-7",
+        "elem-5",
+        "elem-10",
+        "elem-9",
+        "elem-12"
+      ],
+      "stability": 63,
+      "experienceScore": 92,
+      "affixes": [
+        "stable"
+      ],
+      "complexity": 71,
+      "isPublic": true,
+      "visitorCount": 795,
+      "favoriteCount": 61,
+      "createdAt": "2026-06-08T03:58:42.550Z"
+    },
+    {
+      "id": "dream-iv3agu61xo",
+      "ownerId": "player-3",
+      "name": "混沌漩涡·秘境",
+      "description": "这是由深渊漫步者编织的神秘梦境，充满了未知与惊喜...",
+      "theme": "混沌漩涡",
+      "weaverIds": [
+        "weaver-cbfs4u45opu",
+        "weaver-gpxxhw65hbt",
+        "weaver-th183hc1za"
+      ],
+      "elementIds": [
+        "elem-7",
+        "elem-4",
+        "elem-1",
+        "elem-11"
+      ],
+      "stability": 70,
+      "experienceScore": 70,
+      "affixes": [
+        "nightmare"
+      ],
+      "complexity": 50,
+      "isPublic": true,
+      "visitorCount": 356,
+      "favoriteCount": 497,
+      "createdAt": "2026-06-08T02:50:16.649Z"
+    }
+  ],
+  "marketItems": [
+    {
+      "id": "market-e5nxiamzpys",
+      "sellerId": "player-1",
+      "sellerName": "梦境旅人",
+      "sellerAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-1",
+      "type": "blueprint",
+      "itemId": "item-g46awkplubm",
+      "itemName": "古老星空蓝图",
+      "itemData": {
+        "rarity": "rare",
+        "description": "珍贵的梦境道具"
+      },
+      "itemRarity": "rare",
+      "price": 544,
+      "suggestedPriceRange": [
+        435,
+        652
+      ],
+      "createdAt": "2026-06-10T18:48:02.333Z",
+      "status": "active"
+    },
+    {
+      "id": "market-7z32ddo460n",
+      "sellerId": "player-2",
+      "sellerName": "星辰编织者",
+      "sellerAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-2",
+      "type": "guardian",
+      "itemId": "item-r16enl3t94i",
+      "itemName": "星辰守护者契约",
+      "itemData": {
+        "rarity": "common",
+        "description": "珍贵的梦境道具"
+      },
+      "itemRarity": "common",
+      "price": 134,
+      "suggestedPriceRange": [
+        107,
+        160
+      ],
+      "createdAt": "2026-06-10T21:46:39.280Z",
+      "status": "active"
+    },
+    {
+      "id": "market-pbfmdhsiit",
+      "sellerId": "player-3",
+      "sellerName": "深渊漫步者",
+      "sellerAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-3",
+      "type": "blueprint",
+      "itemId": "item-ed7ek136t64",
+      "itemName": "史诗时光蓝图",
+      "itemData": {
+        "rarity": "legendary",
+        "description": "珍贵的梦境道具"
+      },
+      "itemRarity": "legendary",
+      "price": 14840,
+      "suggestedPriceRange": [
+        11872,
+        17808
+      ],
+      "createdAt": "2026-06-10T22:39:11.839Z",
+      "status": "active"
+    },
+    {
+      "id": "market-yjtwmajazi",
+      "sellerId": "player-4",
+      "sellerName": "时光守护者",
+      "sellerAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-4",
+      "type": "guardian",
+      "itemId": "item-jayp6l1po5p",
+      "itemName": "星辰守护者契约",
+      "itemData": {
+        "rarity": "legendary",
+        "description": "珍贵的梦境道具"
+      },
+      "itemRarity": "legendary",
+      "price": 13604,
+      "suggestedPriceRange": [
+        10883,
+        16324
+      ],
+      "createdAt": "2026-06-11T01:03:46.652Z",
+      "status": "active"
+    },
+    {
+      "id": "market-swc53vsuywa",
+      "sellerId": "player-5",
+      "sellerName": "幻境画师",
+      "sellerAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-5",
+      "type": "blueprint",
+      "itemId": "item-9o455uitxmv",
+      "itemName": "古老时光蓝图",
+      "itemData": {
+        "rarity": "rare",
+        "description": "珍贵的梦境道具"
+      },
+      "itemRarity": "rare",
+      "price": 523,
+      "suggestedPriceRange": [
+        418,
+        627
+      ],
+      "createdAt": "2026-06-11T10:32:35.101Z",
+      "status": "active"
+    },
+    {
+      "id": "market-rbb7w8sezs",
+      "sellerId": "player-1",
+      "sellerName": "梦境旅人",
+      "sellerAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-1",
+      "type": "guardian",
+      "itemId": "item-vbp7grfxek7",
+      "itemName": "星辰守护者契约",
+      "itemData": {
+        "rarity": "common",
+        "description": "珍贵的梦境道具"
+      },
+      "itemRarity": "common",
+      "price": 112,
+      "suggestedPriceRange": [
+        89,
+        134
+      ],
+      "createdAt": "2026-06-10T20:21:43.382Z",
+      "status": "active"
+    },
+    {
+      "id": "market-qpdy8gqpdo",
+      "sellerId": "player-2",
+      "sellerName": "星辰编织者",
+      "sellerAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-2",
+      "type": "blueprint",
+      "itemId": "item-5n63cujmpng",
+      "itemName": "禁忌时光蓝图",
+      "itemData": {
+        "rarity": "legendary",
+        "description": "珍贵的梦境道具"
+      },
+      "itemRarity": "legendary",
+      "price": 10954,
+      "suggestedPriceRange": [
+        8763,
+        13144
+      ],
+      "createdAt": "2026-06-10T16:57:06.129Z",
+      "status": "active"
+    },
+    {
+      "id": "market-bz3x533weg",
+      "sellerId": "player-3",
+      "sellerName": "深渊漫步者",
+      "sellerAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-3",
+      "type": "guardian",
+      "itemId": "item-2ith1ahmwuv",
+      "itemName": "守护守护者契约",
+      "itemData": {
+        "rarity": "legendary",
+        "description": "珍贵的梦境道具"
+      },
+      "itemRarity": "legendary",
+      "price": 13402,
+      "suggestedPriceRange": [
+        10721,
+        16082
+      ],
+      "createdAt": "2026-06-10T16:37:40.668Z",
+      "status": "active"
+    },
+    {
+      "id": "market-ai1b2d0jxhs",
+      "sellerId": "player-4",
+      "sellerName": "时光守护者",
+      "sellerAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-4",
+      "type": "blueprint",
+      "itemId": "item-erwadh0bqxh",
+      "itemName": "史诗深渊蓝图",
+      "itemData": {
+        "rarity": "epic",
+        "description": "珍贵的梦境道具"
+      },
+      "itemRarity": "epic",
+      "price": 2914,
+      "suggestedPriceRange": [
+        2331,
+        3496
+      ],
+      "createdAt": "2026-06-10T19:15:47.909Z",
+      "status": "active"
+    },
+    {
+      "id": "market-9lwtbeepl2i",
+      "sellerId": "player-5",
+      "sellerName": "幻境画师",
+      "sellerAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-5",
+      "type": "guardian",
+      "itemId": "item-uzuyu7kb8d",
+      "itemName": "梦境守护者契约",
+      "itemData": {
+        "rarity": "epic",
+        "description": "珍贵的梦境道具"
+      },
+      "itemRarity": "epic",
+      "price": 2540,
+      "suggestedPriceRange": [
+        2032,
+        3048
+      ],
+      "createdAt": "2026-06-10T17:19:30.189Z",
+      "status": "active"
+    }
+  ],
+  "guilds": [
+    {
+      "id": "guild-k82c0ae0cb",
+      "name": "星辰编织者",
+      "leaderId": "player-leader-0",
+      "leaderName": "会长1",
+      "avatar": "https://api.dicebear.com/7.x/shapes/svg?seed=guild-0",
+      "description": "欢迎加入我们，共同探索梦境的奥秘！",
+      "members": [],
+      "dreamTower": {
+        "guildId": "",
+        "buildingType": "dream_tower",
+        "level": 3,
+        "exp": 4212,
+        "maxExp": 10000,
+        "effect": "提升全体成员梦境编织成功率",
+        "effectValue": 5
+      },
+      "researchHall": {
+        "guildId": "",
+        "buildingType": "research_hall",
+        "level": 1,
+        "exp": 4524,
+        "maxExp": 10000,
+        "effect": "提升全体成员探索收益",
+        "effectValue": 10
+      },
+      "totalContribution": 74846,
+      "memberCount": 9,
+      "maxMembers": 100,
+      "createdAt": "2026-06-08T02:16:26.601Z"
+    },
+    {
+      "id": "guild-f7g2pp4845",
+      "name": "深渊守望者",
+      "leaderId": "player-leader-1",
+      "leaderName": "会长2",
+      "avatar": "https://api.dicebear.com/7.x/shapes/svg?seed=guild-1",
+      "description": "欢迎加入我们，共同探索梦境的奥秘！",
+      "members": [],
+      "dreamTower": {
+        "guildId": "",
+        "buildingType": "dream_tower",
+        "level": 2,
+        "exp": 2595,
+        "maxExp": 10000,
+        "effect": "提升全体成员梦境编织成功率",
+        "effectValue": 5
+      },
+      "researchHall": {
+        "guildId": "",
+        "buildingType": "research_hall",
+        "level": 5,
+        "exp": 1820,
+        "maxExp": 10000,
+        "effect": "提升全体成员探索收益",
+        "effectValue": 10
+      },
+      "totalContribution": 61784,
+      "memberCount": 14,
+      "maxMembers": 100,
+      "createdAt": "2026-03-18T02:38:43.652Z"
+    },
+    {
+      "id": "guild-651yu8es1an",
+      "name": "梦境旅团",
+      "leaderId": "player-leader-2",
+      "leaderName": "会长3",
+      "avatar": "https://api.dicebear.com/7.x/shapes/svg?seed=guild-2",
+      "description": "欢迎加入我们，共同探索梦境的奥秘！",
+      "members": [],
+      "dreamTower": {
+        "guildId": "",
+        "buildingType": "dream_tower",
+        "level": 10,
+        "exp": 2341,
+        "maxExp": 10000,
+        "effect": "提升全体成员梦境编织成功率",
+        "effectValue": 5
+      },
+      "researchHall": {
+        "guildId": "",
+        "buildingType": "research_hall",
+        "level": 3,
+        "exp": 2129,
+        "maxExp": 10000,
+        "effect": "提升全体成员探索收益",
+        "effectValue": 10
+      },
+      "totalContribution": 73108,
+      "memberCount": 45,
+      "maxMembers": 100,
+      "createdAt": "2026-05-28T17:02:27.546Z"
+    },
+    {
+      "id": "guild-gb8n0ikaezh",
+      "name": "时光织工",
+      "leaderId": "player-leader-3",
+      "leaderName": "会长4",
+      "avatar": "https://api.dicebear.com/7.x/shapes/svg?seed=guild-3",
+      "description": "欢迎加入我们，共同探索梦境的奥秘！",
+      "members": [],
+      "dreamTower": {
+        "guildId": "",
+        "buildingType": "dream_tower",
+        "level": 7,
+        "exp": 2483,
+        "maxExp": 10000,
+        "effect": "提升全体成员梦境编织成功率",
+        "effectValue": 5
+      },
+      "researchHall": {
+        "guildId": "",
+        "buildingType": "research_hall",
+        "level": 3,
+        "exp": 4503,
+        "maxExp": 10000,
+        "effect": "提升全体成员探索收益",
+        "effectValue": 10
+      },
+      "totalContribution": 73263,
+      "memberCount": 50,
+      "maxMembers": 100,
+      "createdAt": "2026-05-09T13:39:26.189Z"
+    },
+    {
+      "id": "guild-x7p48oqb7wp",
+      "name": "潜意识学派",
+      "leaderId": "player-leader-4",
+      "leaderName": "会长5",
+      "avatar": "https://api.dicebear.com/7.x/shapes/svg?seed=guild-4",
+      "description": "欢迎加入我们，共同探索梦境的奥秘！",
+      "members": [],
+      "dreamTower": {
+        "guildId": "",
+        "buildingType": "dream_tower",
+        "level": 3,
+        "exp": 2705,
+        "maxExp": 10000,
+        "effect": "提升全体成员梦境编织成功率",
+        "effectValue": 5
+      },
+      "researchHall": {
+        "guildId": "",
+        "buildingType": "research_hall",
+        "level": 6,
+        "exp": 616,
+        "maxExp": 10000,
+        "effect": "提升全体成员探索收益",
+        "effectValue": 10
+      },
+      "totalContribution": 68515,
+      "memberCount": 36,
+      "maxMembers": 100,
+      "createdAt": "2026-03-28T20:23:04.763Z"
+    }
+  ],
+  "transactions": [],
+  "notifications": [],
+  "serverEvents": [
+    {
+      "id": "event-uwkl4pwqlbp",
+      "type": "double_reward",
+      "name": "双倍奖励周",
+      "description": "所有探索收益翻倍！",
+      "effectValue": 2,
+      "startTime": "2026-06-10T12:01:30.826Z",
+      "endTime": "2026-06-17T12:01:30.826Z",
+      "isActive": true
+    }
+  ],
+  "visitorData": [],
+  "randomEvents": [],
+  "battles": [],
+  "sceneElements": [
+    {
+      "id": "elem-1",
+      "name": "记忆之花",
+      "category": "plant",
+      "stabilityModifier": 5,
+      "experienceModifier": 8,
+      "affixBonus": {
+        "lucid": 2,
+        "precognition": 0,
+        "nightmare": 0,
+        "stable": 1,
+        "chaotic": 0
+      },
+      "icon": "🌸"
+    },
+    {
+      "id": "elem-2",
+      "name": "遗忘藤蔓",
+      "category": "plant",
+      "stabilityModifier": -3,
+      "experienceModifier": 6,
+      "affixBonus": {
+        "lucid": 0,
+        "precognition": 1.5,
+        "nightmare": 1,
+        "stable": 0,
+        "chaotic": 2
+      },
+      "icon": "🌿"
+    },
+    {
+      "id": "elem-3",
+      "name": "水晶城堡",
+      "category": "architecture",
+      "stabilityModifier": 10,
+      "experienceModifier": 5,
+      "affixBonus": {
+        "lucid": 3,
+        "precognition": 0,
+        "nightmare": 0,
+        "stable": 4,
+        "chaotic": 0
+      },
+      "icon": "🏰"
+    },
+    {
+      "id": "elem-4",
+      "name": "深渊塔楼",
+      "category": "architecture",
+      "stabilityModifier": -8,
+      "experienceModifier": 12,
+      "affixBonus": {
+        "lucid": 0,
+        "precognition": 0,
+        "nightmare": 5,
+        "stable": 0,
+        "chaotic": 3
+      },
+      "icon": "🗼"
+    },
+    {
+      "id": "elem-5",
+      "name": "梦境精灵",
+      "category": "creature",
+      "stabilityModifier": 3,
+      "experienceModifier": 10,
+      "affixBonus": {
+        "lucid": 1,
+        "precognition": 2.5,
+        "nightmare": 0,
+        "stable": 1,
+        "chaotic": 0
+      },
+      "icon": "🧚"
+    },
+    {
+      "id": "elem-6",
+      "name": "梦魇巨兽",
+      "category": "creature",
+      "stabilityModifier": -10,
+      "experienceModifier": 15,
+      "affixBonus": {
+        "lucid": 0,
+        "precognition": 0,
+        "nightmare": 8,
+        "stable": 0,
+        "chaotic": 5
+      },
+      "icon": "🐉"
+    },
+    {
+      "id": "elem-7",
+      "name": "永恒星辰",
+      "category": "weather",
+      "stabilityModifier": 8,
+      "experienceModifier": 8,
+      "affixBonus": {
+        "lucid": 4,
+        "precognition": 3,
+        "nightmare": 0,
+        "stable": 2,
+        "chaotic": 0
+      },
+      "icon": "✨"
+    },
+    {
+      "id": "elem-8",
+      "name": "血色迷雾",
+      "category": "weather",
+      "stabilityModifier": -12,
+      "experienceModifier": 10,
+      "affixBonus": {
+        "lucid": 0,
+        "precognition": 1,
+        "nightmare": 10,
+        "stable": 0,
+        "chaotic": 6
+      },
+      "icon": "🌫️"
+    },
+    {
+      "id": "elem-9",
+      "name": "时光倒流",
+      "category": "time",
+      "stabilityModifier": 0,
+      "experienceModifier": 20,
+      "affixBonus": {
+        "lucid": 2,
+        "precognition": 8,
+        "nightmare": 2,
+        "stable": 0,
+        "chaotic": 3
+      },
+      "icon": "⏳"
+    },
+    {
+      "id": "elem-10",
+      "name": "永恒瞬间",
+      "category": "time",
+      "stabilityModifier": 15,
+      "experienceModifier": 0,
+      "affixBonus": {
+        "lucid": 6,
+        "precognition": 2,
+        "nightmare": 0,
+        "stable": 5,
+        "chaotic": 0
+      },
+      "icon": "⌛"
+    },
+    {
+      "id": "elem-11",
+      "name": "月光草坪",
+      "category": "plant",
+      "stabilityModifier": 6,
+      "experienceModifier": 7,
+      "affixBonus": {
+        "lucid": 2,
+        "precognition": 1,
+        "nightmare": 0,
+        "stable": 3,
+        "chaotic": 0
+      },
+      "icon": "🌙"
+    },
+    {
+      "id": "elem-12",
+      "name": "熔岩洞窟",
+      "category": "architecture",
+      "stabilityModifier": -15,
+      "experienceModifier": 18,
+      "affixBonus": {
+        "lucid": 0,
+        "precognition": 0,
+        "nightmare": 12,
+        "stable": 0,
+        "chaotic": 8
+      },
+      "icon": "🌋"
+    }
+  ],
+  "battleSkills": [
+    {
+      "id": "skill-1",
+      "name": "清醒一击",
+      "description": "打断对方能量回复，造成15点伤害",
+      "cooldown": 8,
+      "currentCooldown": 0,
+      "energyCost": 20,
+      "effectValue": 15,
+      "icon": "⚡"
+    },
+    {
+      "id": "skill-2",
+      "name": "梦魇侵蚀",
+      "description": "降低对方梦境稳定性，持续减少能量",
+      "cooldown": 12,
+      "currentCooldown": 0,
+      "energyCost": 25,
+      "effectValue": 8,
+      "icon": "🌑"
+    },
+    {
+      "id": "skill-3",
+      "name": "预知之盾",
+      "description": "生成护盾，抵挡下次技能伤害",
+      "cooldown": 15,
+      "currentCooldown": 0,
+      "energyCost": 30,
+      "effectValue": 25,
+      "icon": "🛡️"
+    },
+    {
+      "id": "skill-4",
+      "name": "记忆涟漪",
+      "description": "快速回复自身能量",
+      "cooldown": 10,
+      "currentCooldown": 0,
+      "energyCost": 0,
+      "effectValue": 20,
+      "icon": "💫"
+    }
+  ]
+}
