@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Swords, Trophy, Users, Clock, ChevronDown, TrendingUp, TrendingDown, Gift } from 'lucide-react';
+import { Swords, Trophy, Users, Clock, ChevronDown, TrendingUp, TrendingDown, Gift, RefreshCw } from 'lucide-react';
 import GlassCard from '@/components/GlassCard';
 import MagicButton from '@/components/MagicButton';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import RarityBadge from '@/components/RarityBadge';
 import { useArenaStore } from '@/store/useArenaStore';
 import { usePlayerStore } from '@/store/usePlayerStore';
+import { useUIStore } from '@/store/useUIStore';
 import type { Dream, Battle } from '../../shared/types';
 import { mockDreams, mockPlayers } from '../../shared/mockData';
 
@@ -28,12 +29,15 @@ const itemVariants = {
 export default function Arena() {
   const navigate = useNavigate();
   const { currentPlayer } = usePlayerStore();
-  const { isMatching, startMatching, stopMatching, matchHistory, setMatchResult } = useArenaStore();
+  const { isMatching, startMatching, stopMatching, checkMatchStatus, matchHistory, matchResult, isLoading, error, setError } = useArenaStore();
+  const { showToast } = useUIStore();
 
+  const playerId = currentPlayer?.id || 'player-1';
   const [selectedDreamId, setSelectedDreamId] = useState<string>('');
   const [showDreamDropdown, setShowDreamDropdown] = useState(false);
   const [queueCount, setQueueCount] = useState(128);
   const [activeTab, setActiveTab] = useState<'matching' | 'history' | 'rewards'>('matching');
+  const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
   const myDreams = mockDreams.filter((d) => d.ownerId === 'player-1');
   const selectedDream = myDreams.find((d) => d.id === selectedDreamId) || myDreams[0];
@@ -53,30 +57,85 @@ export default function Arena() {
     }
   }, [isMatching]);
 
-  const handleMatch = () => {
+  useEffect(() => {
+    if (isMatching) {
+      pollingRef.current = setInterval(async () => {
+        const result = await checkMatchStatus();
+        if (result?.status === 'success' && result.battleId) {
+          showToast({
+            type: 'success',
+            title: '匹配成功！',
+            content: `已为你找到对手：${result.matchedPlayer?.name}`,
+          });
+          if (pollingRef.current) {
+            clearInterval(pollingRef.current);
+            pollingRef.current = null;
+          }
+          navigate(`/battle/${result.battleId}`);
+        } else if (result?.status === 'timeout') {
+          showToast({
+            type: 'warning',
+            title: '匹配超时',
+            content: '暂无合适对手，请稍后再试',
+          });
+          if (pollingRef.current) {
+            clearInterval(pollingRef.current);
+            pollingRef.current = null;
+          }
+        }
+      }, 2000);
+    } else {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+      }
+    }
+
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+      }
+    };
+  }, [isMatching, checkMatchStatus, navigate, showToast]);
+
+  const handleMatch = async () => {
     if (!selectedDreamId) return;
 
     if (isMatching) {
-      stopMatching();
+      await stopMatching();
+      showToast({
+        type: 'info',
+        title: '已取消匹配',
+        content: '',
+      });
     } else {
-      startMatching();
-      setTimeout(() => {
-        const opponent = mockPlayers[1];
-        const opponentDream = mockDreams.find((d) => d.ownerId === opponent.id) || mockDreams[1];
-        setMatchResult({
-          matchId: 'match-123',
-          status: 'success',
-          battleId: 'battle-456',
-          matchedPlayer: {
-            id: opponent.id,
-            name: opponent.nickname,
-            avatar: opponent.avatar,
-            level: opponent.level,
-          },
+      const matched = await startMatching(playerId, selectedDreamId);
+      if (matched && matchResult?.battleId) {
+        showToast({
+          type: 'success',
+          title: '匹配成功！',
+          content: `已为你找到对手`,
         });
-        stopMatching();
-        navigate('/battle/battle-456');
-      }, 3000 + Math.random() * 3000);
+        navigate(`/battle/${matchResult.battleId}`);
+      } else if (error) {
+        showToast({
+          type: 'error',
+          title: '匹配失败',
+          content: error,
+        });
+      }
+    }
+  };
+
+  const handleRefreshStatus = async () => {
+    const result = await checkMatchStatus();
+    if (result?.status === 'success' && result.battleId) {
+      showToast({
+        type: 'success',
+        title: '匹配成功！',
+        content: `已为你找到对手`,
+      });
+      navigate(`/battle/${result.battleId}`);
     }
   };
 
@@ -285,13 +344,24 @@ export default function Arena() {
                     <Swords className="w-10 h-10 text-dream-purple" />
                   </motion.div>
                   <p className="text-xl font-bold">正在匹配中...</p>
+                  <p className="text-sm text-dream-light/50">
+                    匹配编号: <span className="text-dream-gold font-mono">{matchResult?.matchId || '-'}</span>
+                  </p>
                   <p className="text-dream-light/60">
                     当前队列: <span className="text-dream-gold font-bold">{queueCount}</span> 人
                   </p>
-                  <p className="text-sm text-dream-light/50">预计等待时间: 3-5分钟</p>
-                  <MagicButton variant="danger" onClick={handleMatch}>
-                    取消匹配
-                  </MagicButton>
+                  <p className="text-sm text-dream-light/50">
+                    预计等待时间: {matchResult?.estimatedWaitTime || 60}秒
+                  </p>
+                  <div className="flex gap-3 justify-center">
+                    <MagicButton variant="secondary" onClick={handleRefreshStatus} disabled={isLoading}>
+                      <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                      刷新状态
+                    </MagicButton>
+                    <MagicButton variant="danger" onClick={handleMatch}>
+                      取消匹配
+                    </MagicButton>
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-6">
@@ -304,11 +374,11 @@ export default function Arena() {
                   <MagicButton
                     size="lg"
                     onClick={handleMatch}
-                    disabled={!selectedDreamId}
+                    disabled={!selectedDreamId || isLoading}
                     glow
                   >
                     <Swords className="w-5 h-5" />
-                    快速匹配
+                    {isLoading ? '匹配中...' : '快速匹配'}
                   </MagicButton>
                 </div>
               )}

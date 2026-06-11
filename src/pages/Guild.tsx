@@ -25,13 +25,15 @@ const itemVariants = {
 };
 
 export default function Guild() {
-  const { currentPlayer } = usePlayerStore();
-  const { currentGuild } = useGuildStore();
+  const { currentPlayer, updatePlayer } = usePlayerStore();
+  const { currentGuild, upgradeBuilding, updateMember, fetchMyGuild, isLoading, error } = useGuildStore();
   const { showToast } = useUIStore();
 
+  const playerId = currentPlayer?.id || 'player-1';
   const [activeTab, setActiveTab] = useState<'info' | 'buildings' | 'members' | 'contribute'>('info');
   const [materialContribution, setMaterialContribution] = useState(0);
   const [coinContribution, setCoinContribution] = useState(0);
+  const [selectedBuilding, setSelectedBuilding] = useState<'dream_tower' | 'research_hall'>('dream_tower');
 
   const guild = currentGuild || mockGuilds[0];
 
@@ -43,22 +45,71 @@ export default function Guild() {
     });
   };
 
-  const handleContribute = () => {
-    if (materialContribution <= 0 && coinContribution <= 0) {
+  const handleContribute = async () => {
+    if (materialContribution <= 0 || coinContribution <= 0) {
       showToast({
         type: 'error',
         title: '请输入贡献数量',
+        content: '材料和金币都必须填写才能贡献',
+      });
+      return;
+    }
+
+    if (!currentGuild?.id) {
+      showToast({
+        type: 'error',
+        title: '未加入公会',
         content: '',
       });
       return;
     }
-    showToast({
-      type: 'success',
-      title: '贡献成功',
-      content: `共贡献了 ${materialContribution} 材料和 ${coinContribution} 金币，获得 ${materialContribution * 10 + coinContribution} 贡献值`,
-    });
-    setMaterialContribution(0);
-    setCoinContribution(0);
+
+    try {
+      const result = await upgradeBuilding(selectedBuilding, {
+        guildId: currentGuild.id,
+        playerId,
+        materials: materialContribution,
+        coins: coinContribution,
+      });
+
+      if (result) {
+        showToast({
+          type: 'success',
+          title: '贡献成功',
+          content: `贡献了 ${materialContribution} 材料和 ${coinContribution} 金币，获得 ${result.contributionGained} 贡献值`,
+        });
+
+        if (result.remainingMaterials !== undefined) {
+          updatePlayer({ materials: result.remainingMaterials });
+        }
+        if (result.remainingCoins !== undefined) {
+          updatePlayer({ coins: result.remainingCoins });
+        }
+
+        if (result.contributionGained !== undefined) {
+          updateMember(playerId, {
+            contribution: (guild.members.find((m: any) => m.playerId === playerId)?.contribution || 0) + result.contributionGained,
+          });
+        }
+
+        if (result.leveledUp) {
+          showToast({
+            type: 'success',
+            title: '🎉 建筑升级！',
+            content: `${selectedBuilding === 'dream_tower' ? '联合梦境塔' : '潜意识研究厅'} 升到 ${result.newLevel} 级！`,
+          });
+        }
+
+        setMaterialContribution(0);
+        setCoinContribution(0);
+      }
+    } catch (err: any) {
+      showToast({
+        type: 'error',
+        title: '贡献失败',
+        content: err?.response?.data?.error || err.message || '未知错误',
+      });
+    }
   };
 
   const buildings = [
@@ -442,7 +493,37 @@ export default function Guild() {
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-dream-light/70 mb-2">
-                  材料贡献
+                  选择建筑
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setSelectedBuilding('dream_tower')}
+                    className={`p-4 rounded-xl border-2 transition-all ${
+                      selectedBuilding === 'dream_tower'
+                        ? 'border-dream-purple bg-dream-purple/20'
+                        : 'border-dream-purple/20 hover:border-dream-purple/50'
+                    }`}
+                  >
+                    <span className="text-2xl block mb-1">🏰</span>
+                    <span className="text-sm font-medium">联合梦境塔</span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedBuilding('research_hall')}
+                    className={`p-4 rounded-xl border-2 transition-all ${
+                      selectedBuilding === 'research_hall'
+                        ? 'border-dream-blue bg-dream-blue/20'
+                        : 'border-dream-blue/20 hover:border-dream-blue/50'
+                    }`}
+                  >
+                    <span className="text-2xl block mb-1">🔮</span>
+                    <span className="text-sm font-medium">潜意识研究厅</span>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-dream-light/70 mb-2">
+                  材料贡献 <span className="text-dream-red">*</span>
                 </label>
                 <div className="flex items-center gap-3">
                   <input
@@ -452,19 +533,20 @@ export default function Guild() {
                     min={0}
                     max={currentPlayer?.materials || 1000}
                     className="flex-1 px-4 py-3 rounded-xl bg-dream-purple/10 border border-dream-purple/30 text-white focus:outline-none focus:border-dream-purple/60 transition-colors"
+                    placeholder="请输入材料数量"
                   />
                   <span className="text-dream-light/50 whitespace-nowrap">
                     拥有: {currentPlayer?.materials?.toLocaleString() || 1000}
                   </span>
                 </div>
                 <p className="text-xs text-dream-light/50 mt-2">
-                  每单位材料可获得 10 贡献值
+                  每单位材料可获得 5 贡献值、10 建筑经验
                 </p>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-dream-light/70 mb-2">
-                  金币贡献
+                  金币贡献 <span className="text-dream-red">*</span>
                 </label>
                 <div className="flex items-center gap-3">
                   <input
@@ -474,13 +556,14 @@ export default function Guild() {
                     min={0}
                     max={currentPlayer?.coins || 50000}
                     className="flex-1 px-4 py-3 rounded-xl bg-dream-purple/10 border border-dream-purple/30 text-white focus:outline-none focus:border-dream-purple/60 transition-colors"
+                    placeholder="请输入金币数量"
                   />
                   <span className="text-dream-light/50 whitespace-nowrap">
                     拥有: {currentPlayer?.coins?.toLocaleString() || 50000}
                   </span>
                 </div>
                 <p className="text-xs text-dream-light/50 mt-2">
-                  每金币可获得 1 贡献值
+                  每金币可获得 1 贡献值、0.5 建筑经验
                 </p>
               </div>
 
@@ -488,19 +571,31 @@ export default function Guild() {
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-dream-light/70">预计获得贡献值</span>
                   <span className="text-2xl font-bold text-dream-gold">
-                    {(materialContribution * 10 + coinContribution).toLocaleString()}
+                    {(materialContribution * 5 + coinContribution).toLocaleString()}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm text-dream-light/50">
-                  <span>材料贡献: {materialContribution * 10}</span>
+                  <span>材料贡献: {materialContribution * 5}</span>
                   <span>金币贡献: {coinContribution}</span>
+                </div>
+                <div className="mt-3 pt-3 border-t border-dream-gold/20">
+                  <div className="flex items-center justify-between text-sm text-dream-light/50">
+                    <span>预计建筑经验</span>
+                    <span className="text-dream-blue font-medium">
+                      +{Math.floor(materialContribution * 10 + coinContribution * 0.5)}
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <MagicButton className="w-full" onClick={handleContribute}>
+              <MagicButton className="w-full" onClick={handleContribute} disabled={isLoading}>
                 <Plus className="w-4 h-4" />
-                提交贡献
+                {isLoading ? '提交中...' : '提交贡献'}
               </MagicButton>
+
+              <p className="text-xs text-dream-light/40 text-center">
+                材料和金币都必须填写才能提交贡献
+              </p>
             </div>
           </GlassCard>
 

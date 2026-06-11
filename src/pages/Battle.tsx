@@ -104,7 +104,9 @@ export default function Battle() {
       )
     );
     updateSkillCooldown(skill.id, skill.cooldown);
-    useSkill(skill.id, skill);
+    if (id && currentPlayer?.id) {
+      useSkill(id, currentPlayer.id, skill.id);
+    }
 
     const damage = skill.effectValue;
     setOpponentEnergy((prev) => Math.max(0, prev - damage));

@@ -150,10 +150,10 @@ router.post('/building/:type/upgrade', async (req: Request, res: Response): Prom
   const materialsNum = Number(materials);
   const coinsNum = Number(coins);
 
-  if (materialsNum <= 0 && coinsNum <= 0) {
+  if (materialsNum <= 0 || coinsNum <= 0) {
     res.status(400).json({
       success: false,
-      error: 'Please contribute at least one resource'
+      error: '材料和金币都必须填写才能贡献'
     });
     return;
   }
@@ -264,10 +264,10 @@ router.post('/:id/upgrade', async (req: Request, res: Response): Promise<void> =
   const materialsNum = Number(materials);
   const coinsNum = Number(coins);
 
-  if (materialsNum <= 0 && coinsNum <= 0) {
+  if (materialsNum <= 0 || coinsNum <= 0) {
     res.status(400).json({
       success: false,
-      error: 'Please contribute at least one resource'
+      error: '材料和金币都必须填写才能贡献'
     });
     return;
   }

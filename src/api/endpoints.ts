@@ -6,6 +6,7 @@ import type {
   MarketItem,
   Transaction,
   Guild,
+  GuildBuilding,
   Notification,
   VisitorData,
   RandomEvent,
@@ -162,11 +163,21 @@ export const endpoints = {
       apiClient.delete<void>(`/guild/${guildId}/members/${playerId}`),
     upgradeBuilding: (
       buildingType: 'dream_tower' | 'research_hall',
-      data: { guildId: string; playerId: string; materials?: number; coins?: number }
-    ) => apiClient.post<any>(`/guild/building/${buildingType}/upgrade`, data),
-    getMyGuild: (playerId?: string) => {
-      const query = playerId ? `?playerId=${playerId}` : '';
-      return apiClient.get<Guild>(`/guild/my${query}`);
+      data: { guildId: string; playerId: string; materials: number; coins: number }
+    ) => apiClient.post<{
+      building: GuildBuilding;
+      remainingMaterials: number;
+      remainingCoins: number;
+      contributionGained: number;
+      expGained: number;
+      leveledUp: boolean;
+      newLevel: number;
+    }>(`/guild/building/${buildingType}/upgrade`, data),
+    getMyGuild: (playerId: string) => {
+      return apiClient.get<Guild>(`/guild/my?playerId=${playerId}`);
+    },
+    getGuildByPlayer: (playerId: string) => {
+      return apiClient.get<Guild>(`/guild?playerId=${playerId}`);
     },
   },
 

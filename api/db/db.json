@@ -6,7 +6,7 @@
       "avatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-1",
       "level": 11,
       "exp": 4502,
-      "coins": 16933,
+      "coins": 17450,
       "dreamFragments": 481,
       "arenaPoints": 1250,
       "createdAt": "2026-05-25T07:27:39.379Z"
@@ -17,7 +17,7 @@
       "avatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=player-2",
       "level": 2,
       "exp": 9672,
-      "coins": 67226,
+      "coins": 66682,
       "dreamFragments": 121,
       "arenaPoints": 1308,
       "createdAt": "2026-05-26T15:59:00.264Z"
@@ -232,14 +232,15 @@
         "elem-6",
         "elem-5"
       ],
-      "stability": 36,
+      "stability": 34,
       "experienceScore": 99,
       "affixes": [],
       "complexity": 74,
       "isPublic": true,
       "visitorCount": 394,
       "favoriteCount": 388,
-      "createdAt": "2026-06-05T12:27:39.302Z"
+      "createdAt": "2026-06-05T12:27:39.302Z",
+      "baseStability": 36
     },
     {
       "id": "dream-qhim6ltpt0l",
@@ -258,7 +259,7 @@
         "elem-9",
         "elem-1"
       ],
-      "stability": 58,
+      "stability": 55,
       "experienceScore": 100,
       "affixes": [
         "nightmare",
@@ -268,7 +269,8 @@
       "isPublic": false,
       "visitorCount": 442,
       "favoriteCount": 495,
-      "createdAt": "2026-06-06T20:21:20.463Z"
+      "createdAt": "2026-06-06T20:21:20.463Z",
+      "baseStability": 58
     },
     {
       "id": "dream-e9rpis4etqa",
@@ -285,14 +287,15 @@
         "elem-5",
         "elem-1"
       ],
-      "stability": 48,
+      "stability": 45,
       "experienceScore": 77,
       "affixes": [],
       "complexity": 50,
       "isPublic": true,
       "visitorCount": 573,
       "favoriteCount": 101,
-      "createdAt": "2026-06-10T04:24:18.414Z"
+      "createdAt": "2026-06-10T04:24:18.414Z",
+      "baseStability": 48
     },
     {
       "id": "dream-xarj3mfw87e",
@@ -308,14 +311,15 @@
         "elem-4",
         "elem-8"
       ],
-      "stability": 11,
+      "stability": 10,
       "experienceScore": 69,
       "affixes": [],
       "complexity": 34,
       "isPublic": true,
       "visitorCount": 208,
       "favoriteCount": 108,
-      "createdAt": "2026-06-07T13:37:28.579Z"
+      "createdAt": "2026-06-07T13:37:28.579Z",
+      "baseStability": 11
     },
     {
       "id": "dream-869uqxb2ib7",
@@ -332,7 +336,7 @@
         "elem-7",
         "elem-12"
       ],
-      "stability": 35,
+      "stability": 33,
       "experienceScore": 84,
       "affixes": [
         "lucid"
@@ -341,7 +345,8 @@
       "isPublic": true,
       "visitorCount": 835,
       "favoriteCount": 188,
-      "createdAt": "2026-06-04T19:01:03.444Z"
+      "createdAt": "2026-06-04T19:01:03.444Z",
+      "baseStability": 35
     },
     {
       "id": "dream-4k7k7ie0cf",
@@ -359,7 +364,7 @@
         "elem-2",
         "elem-11"
       ],
-      "stability": 41,
+      "stability": 38,
       "experienceScore": 85,
       "affixes": [
         "lucid",
@@ -369,7 +374,8 @@
       "isPublic": true,
       "visitorCount": 25,
       "favoriteCount": 373,
-      "createdAt": "2026-06-05T17:38:03.099Z"
+      "createdAt": "2026-06-05T17:38:03.099Z",
+      "baseStability": 41
     },
     {
       "id": "dream-q0v4ho2uj7",
@@ -389,7 +395,7 @@
         "elem-9",
         "elem-12"
       ],
-      "stability": 63,
+      "stability": 59,
       "experienceScore": 92,
       "affixes": [
         "stable"
@@ -398,7 +404,8 @@
       "isPublic": true,
       "visitorCount": 795,
       "favoriteCount": 61,
-      "createdAt": "2026-06-08T03:58:42.550Z"
+      "createdAt": "2026-06-08T03:58:42.550Z",
+      "baseStability": 63
     },
     {
       "id": "dream-iv3agu61xo",
@@ -417,7 +424,7 @@
         "elem-1",
         "elem-11"
       ],
-      "stability": 70,
+      "stability": 66,
       "experienceScore": 70,
       "affixes": [
         "nightmare"
@@ -426,7 +433,8 @@
       "isPublic": true,
       "visitorCount": 356,
       "favoriteCount": 497,
-      "createdAt": "2026-06-08T02:50:16.649Z"
+      "createdAt": "2026-06-08T02:50:16.649Z",
+      "baseStability": 70
     }
   ],
   "marketItems": [
@@ -449,7 +457,7 @@
         652
       ],
       "createdAt": "2026-06-10T18:48:02.333Z",
-      "status": "active"
+      "status": "sold"
     },
     {
       "id": "market-7z32ddo460n",
@@ -798,8 +806,72 @@
       "createdAt": "2026-03-28T20:23:04.763Z"
     }
   ],
-  "transactions": [],
-  "notifications": [],
+  "transactions": [
+    {
+      "id": "tx-zw7xst84jmm",
+      "itemId": "market-e5nxiamzpys",
+      "buyerId": "player-2",
+      "sellerId": "player-1",
+      "price": 544,
+      "createdAt": "2026-06-11T14:57:49.946Z"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif-dcprsw8e9ys",
+      "type": "market_announcement",
+      "title": "全服成交公告",
+      "content": "🎉 玩家「星辰编织者」以 544 金币购入了 稀有级「古老星空蓝图」！",
+      "isRead": false,
+      "createdAt": "2026-06-11T14:57:49.946Z",
+      "playerId": "player-1"
+    },
+    {
+      "id": "notif-hom2drst9zb",
+      "type": "market_announcement",
+      "title": "全服成交公告",
+      "content": "🎉 玩家「星辰编织者」以 544 金币购入了 稀有级「古老星空蓝图」！",
+      "isRead": false,
+      "createdAt": "2026-06-11T14:57:49.946Z",
+      "playerId": "player-2"
+    },
+    {
+      "id": "notif-celw6fsovcv",
+      "type": "market_announcement",
+      "title": "全服成交公告",
+      "content": "🎉 玩家「星辰编织者」以 544 金币购入了 稀有级「古老星空蓝图」！",
+      "isRead": false,
+      "createdAt": "2026-06-11T14:57:49.946Z",
+      "playerId": "player-3"
+    },
+    {
+      "id": "notif-c4oomaya13",
+      "type": "market_announcement",
+      "title": "全服成交公告",
+      "content": "🎉 玩家「星辰编织者」以 544 金币购入了 稀有级「古老星空蓝图」！",
+      "isRead": false,
+      "createdAt": "2026-06-11T14:57:49.946Z",
+      "playerId": "player-4"
+    },
+    {
+      "id": "notif-s7z68n9cvk",
+      "type": "market_announcement",
+      "title": "全服成交公告",
+      "content": "🎉 玩家「星辰编织者」以 544 金币购入了 稀有级「古老星空蓝图」！",
+      "isRead": false,
+      "createdAt": "2026-06-11T14:57:49.946Z",
+      "playerId": "player-5"
+    },
+    {
+      "id": "notif-npn9t0vw0ga",
+      "type": "market_announcement",
+      "title": "全服成交公告",
+      "content": "🎉 玩家「星辰编织者」以 544 金币购入了 稀有级「古老星空蓝图」！",
+      "isRead": false,
+      "createdAt": "2026-06-11T14:57:49.946Z",
+      "playerId": "guest-8vqhuzpi5cg"
+    }
+  ],
   "serverEvents": [
     {
       "id": "event-uwkl4pwqlbp",
@@ -810,6 +882,26 @@
       "startTime": "2026-06-10T12:01:30.826Z",
       "endTime": "2026-06-17T12:01:30.826Z",
       "isActive": true
+    },
+    {
+      "id": "event-2gs84006adv",
+      "type": "nightmare_tide",
+      "name": "梦魇潮汐",
+      "description": "交易市场的繁荣引来了梦魇潮汐，今日全服梦境稳定性下降 5%",
+      "effectValue": 5,
+      "startTime": "2026-06-11T14:57:49.946Z",
+      "endTime": "2026-06-12T14:57:49.946Z",
+      "isActive": true,
+      "affectedDreamIds": [
+        "dream-hzgpombw3j",
+        "dream-qhim6ltpt0l",
+        "dream-e9rpis4etqa",
+        "dream-xarj3mfw87e",
+        "dream-869uqxb2ib7",
+        "dream-4k7k7ie0cf",
+        "dream-q0v4ho2uj7",
+        "dream-iv3agu61xo"
+      ]
     }
   ],
   "visitorData": [],

@@ -1,5 +1,6 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Coins, Gem, Heart, Eye, Award, TrendingUp, Trophy, Users } from 'lucide-react';
+import { Coins, Gem, Heart, Eye, Award, TrendingUp, Trophy, Users, Bell, Check, CheckCheck } from 'lucide-react';
 import GlassCard from '@/components/GlassCard';
 import MagicButton from '@/components/MagicButton';
 import RarityBadge from '@/components/RarityBadge';
@@ -7,8 +8,9 @@ import AffixBadge from '@/components/AffixBadge';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import EnergyBar from '@/components/EnergyBar';
 import { usePlayerStore } from '@/store/usePlayerStore';
+import { useUIStore } from '@/store/useUIStore';
 import { mockDreams } from '../../shared/mockData';
-import type { AffixType, Rarity } from '../../shared/types';
+import type { AffixType, Rarity, Notification } from '../../shared/types';
 
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -25,7 +27,11 @@ const itemVariants = {
 };
 
 export default function Profile() {
-  const { currentPlayer } = usePlayerStore();
+  const { currentPlayer, notifications, unreadCount, fetchNotifications, markNotificationRead, markAllNotificationsRead, isLoading } = usePlayerStore();
+  const { showToast } = useUIStore();
+
+  const playerId = currentPlayer?.id || 'player-1';
+  const [activeTab, setActiveTab] = useState<'profile' | 'notifications'>('profile');
 
   const player = currentPlayer || {
     id: 'profile-fallback',
@@ -39,6 +45,25 @@ export default function Profile() {
     dreamFragments: 1250,
     arenaPoints: 0,
     createdAt: new Date().toISOString(),
+  };
+
+  useEffect(() => {
+    if (activeTab === 'notifications') {
+      fetchNotifications(playerId);
+    }
+  }, [activeTab, playerId, fetchNotifications]);
+
+  const handleMarkRead = async (id: string) => {
+    await markNotificationRead(playerId, id);
+  };
+
+  const handleMarkAllRead = async () => {
+    await markAllNotificationsRead(playerId);
+    showToast({
+      type: 'success',
+      title: '已全部标记为已读',
+      content: '',
+    });
   };
 
   const favorites = mockDreams.slice(0, 6);
@@ -140,7 +165,39 @@ export default function Profile() {
         </GlassCard>
       </motion.div>
 
-      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <motion.div variants={itemVariants}>
+        <div className="flex gap-2 bg-dream-purple/10 p-1 rounded-xl inline-flex">
+          {[
+            { id: 'profile', label: '个人资料', icon: Award },
+            { id: 'notifications', label: '消息通知', icon: Bell },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r from-dream-purple to-dream-blue text-white shadow-lg'
+                    : 'text-dream-light/60 hover:text-white hover:bg-dream-purple/20'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {tab.label}
+                {tab.id === 'notifications' && unreadCount > 0 && (
+                  <span className="w-5 h-5 rounded-full bg-dream-red text-xs flex items-center justify-center">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      {activeTab === 'profile' && (
+        <>
+          <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, i) => {
           const Icon = stat.icon;
           return (
@@ -300,6 +357,92 @@ export default function Profile() {
           </div>
         </GlassCard>
       </motion.div>
+        </>
+      )}
+
+      {activeTab === 'notifications' && (
+        <motion.div variants={itemVariants}>
+          <GlassCard className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-bold flex items-center gap-2">
+                <Bell className="w-5 h-5 text-dream-gold" />
+                消息通知
+                {unreadCount > 0 && (
+                  <span className="px-2 py-0.5 rounded-full bg-dream-red/20 text-dream-red text-sm font-medium">
+                    {unreadCount} 条未读
+                  </span>
+                )}
+              </h3>
+              {unreadCount > 0 && (
+                <MagicButton size="sm" variant="secondary" onClick={handleMarkAllRead}>
+                  <CheckCheck className="w-4 h-4" />
+                  全部已读
+                </MagicButton>
+              )}
+            </div>
+
+            <div className="space-y-3 max-h-[600px] overflow-y-auto">
+              {isLoading ? (
+                <div className="text-center py-12 text-dream-light/50">
+                  加载中...
+                </div>
+              ) : notifications.length === 0 ? (
+                <div className="text-center py-12 text-dream-light/50">
+                  <Bell className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                  <p>暂无通知消息</p>
+                </div>
+              ) : (
+                notifications.map((notification: Notification) => (
+                  <div
+                    key={notification.id}
+                    className={`p-4 rounded-xl border transition-all cursor-pointer hover:bg-dream-purple/10 ${
+                      notification.isRead
+                        ? 'bg-dream-purple/5 border-dream-purple/10 opacity-70'
+                        : 'bg-dream-purple/10 border-dream-purple/30'
+                    }`}
+                    onClick={() => !notification.isRead && handleMarkRead(notification.id)}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                        notification.type === 'market_announcement' ? 'bg-dream-gold/20 text-dream-gold' :
+                        notification.type === 'system' ? 'bg-dream-blue/20 text-dream-blue' :
+                        'bg-dream-purple/20 text-dream-purple'
+                      }`}>
+                        {notification.type === 'market_announcement' ? '📢' :
+                         notification.type === 'system' ? '⚙️' : '🔔'}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <h4 className="font-medium text-sm truncate">
+                            {notification.title}
+                          </h4>
+                          {!notification.isRead && (
+                            <span className="w-2 h-2 rounded-full bg-dream-red flex-shrink-0" />
+                          )}
+                        </div>
+                        <p className="text-sm text-dream-light/60 line-clamp-2">
+                          {notification.content}
+                        </p>
+                        <p className="text-xs text-dream-light/40 mt-2">
+                          {new Date(notification.createdAt).toLocaleString('zh-CN')}
+                        </p>
+                      </div>
+                      {!notification.isRead && (
+                        <button
+                          className="p-1.5 rounded-lg hover:bg-dream-purple/20 text-dream-light/50 hover:text-dream-light flex-shrink-0"
+                          title="标记已读"
+                        >
+                          <Check className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </GlassCard>
+        </motion.div>
+      )}
     </motion.div>
   );
 }

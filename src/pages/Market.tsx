@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Heart, Filter, ArrowUpDown, Plus, Package, Coins, History } from 'lucide-react';
+import { ShoppingBag, Heart, Filter, ArrowUpDown, Plus, Package, Coins, History, Sparkles } from 'lucide-react';
 import GlassCard from '@/components/GlassCard';
 import MagicButton from '@/components/MagicButton';
 import RarityBadge from '@/components/RarityBadge';
@@ -9,7 +9,7 @@ import PriceChart from '@/components/market/PriceChart';
 import { useMarketStore } from '@/store/useMarketStore';
 import { usePlayerStore } from '@/store/usePlayerStore';
 import { useUIStore } from '@/store/useUIStore';
-import type { MarketItem, MarketItemType, Rarity } from '../../shared/types';
+import type { MarketItem, MarketItemType, Rarity, PriceSuggestion } from '../../shared/types';
 import { mockMarketItems, mockPlayers } from '../../shared/mockData';
 
 const containerVariants = {
@@ -27,10 +27,11 @@ const itemVariants = {
 };
 
 export default function Market() {
-  const { currentPlayer } = usePlayerStore();
-  const { items, cart, addToCart, getCartTotal, clearCart } = useMarketStore();
+  const { currentPlayer, updatePlayer } = usePlayerStore();
+  const { items, fetchItems, buyItem, publishItem, getPriceSuggestion, isLoading, error, activeEvents, fetchActiveEvents, cart, getCartTotal } = useMarketStore();
   const { showToast } = useUIStore();
 
+  const playerId = currentPlayer?.id || 'player-1';
   const [activeTab, setActiveTab] = useState<'market' | 'publish' | 'my-items'>('market');
   const [filterType, setFilterType] = useState<MarketItemType | 'all'>('all');
   const [filterRarity, setFilterRarity] = useState<Rarity | 'all'>('all');
@@ -41,18 +42,45 @@ export default function Market() {
   const [publishRarity, setPublishRarity] = useState<Rarity>('rare');
   const [publishPrice, setPublishPrice] = useState(500);
   const [publishItemName, setPublishItemName] = useState('');
+  const [priceSuggestion, setPriceSuggestion] = useState<PriceSuggestion | null>(null);
 
   const allItems = items.length > 0 ? items : mockMarketItems;
   const myItems = allItems.filter((i) => i.sellerId === 'player-1');
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setPublishPrice((prev) => {
-        const basePrice = { common: 100, rare: 500, epic: 2000, legendary: 10000 }[publishRarity];
-        return basePrice + Math.floor(Math.random() * basePrice * 0.3);
-      });
-    }, 5000);
-  }, [publishRarity]);
+    fetchItems();
+    fetchActiveEvents();
+  }, [fetchItems, fetchActiveEvents]);
+
+  useEffect(() => {
+    if (activeTab === 'market') {
+      fetchItems({ type: filterType === 'all' ? undefined : filterType, rarity: filterRarity === 'all' ? undefined : filterRarity, sortBy });
+    }
+  }, [filterType, filterRarity, sortBy, activeTab, fetchItems]);
+
+  useEffect(() => {
+    if (activeTab === 'publish') {
+      handlePriceSuggestion();
+    }
+  }, [publishType, publishRarity, activeTab]);
+
+  const handlePriceSuggestion = async () => {
+    const suggestion = await getPriceSuggestion(publishType, publishRarity);
+    if (suggestion) {
+      setPriceSuggestion(suggestion);
+      if (suggestion.suggestedRange && suggestion.suggestedRange.length === 2) {
+        setPublishPrice(Math.floor((suggestion.suggestedRange[0] + suggestion.suggestedRange[1]) / 2));
+      }
+    }
+  };
+
+  const handleCheckout = async () => {
+    showToast({
+      type: 'info',
+      title: '购物车功能开发中',
+      content: '暂不支持批量购买，请单独购买商品',
+    });
+  };
 
   const filteredItems = allItems
     .filter((item) => filterType === 'all' || item.type === filterType)
@@ -82,34 +110,46 @@ export default function Market() {
     });
   };
 
-  const handleBuy = (item: MarketItem) => {
-    addToCart(item);
-    showToast({
-      type: 'success',
-      title: '已加入购物车',
-      content: `${item.itemName} 已加入购物车`,
-    });
-  };
-
-  const handleCheckout = () => {
-    const total = getCartTotal();
-    if (currentPlayer && currentPlayer.coins >= total) {
+  const handleBuy = async (item: MarketItem) => {
+    if (item.status !== 'active') {
       showToast({
-        type: 'success',
-        title: '购买成功！',
-        content: `花费 ${total} 金币购买了 ${cart.length} 件商品`,
+        type: 'warning',
+        title: '商品已售出',
+        content: '这件商品已经被买走了',
       });
-      clearCart();
-    } else {
+      return;
+    }
+
+    try {
+      const result = await buyItem(item.id, playerId);
+      if (result) {
+        showToast({
+          type: 'success',
+          title: '购买成功！',
+          content: `花费 ${item.price} 金币购买了 ${item.itemName}`,
+        });
+        if (result.buyerRemainingCoins !== undefined && currentPlayer) {
+          updatePlayer({ coins: result.buyerRemainingCoins });
+        }
+        if (result.serverEvent) {
+          showToast({
+            type: 'info',
+            title: '🌊 梦魇潮汐',
+            content: result.serverEvent.description,
+          });
+        }
+        fetchActiveEvents();
+      }
+    } catch (err: any) {
       showToast({
         type: 'error',
-        title: '金币不足',
-        content: '请先充值金币',
+        title: '购买失败',
+        content: err?.response?.data?.error || err.message || '未知错误',
       });
     }
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     if (!publishItemName) {
       showToast({
         type: 'error',
@@ -118,12 +158,31 @@ export default function Market() {
       });
       return;
     }
-    showToast({
-      type: 'success',
-      title: '商品已上架',
-      content: `${publishItemName} 已成功上架`,
-    });
-    setPublishItemName('');
+
+    try {
+      const result = await publishItem({
+        sellerId: playerId,
+        type: publishType,
+        itemName: publishItemName,
+        itemRarity: publishRarity,
+        price: publishPrice,
+      });
+      if (result) {
+        showToast({
+          type: 'success',
+          title: '商品已上架',
+          content: `${publishItemName} 已成功上架`,
+        });
+        setPublishItemName('');
+        fetchItems();
+      }
+    } catch (err: any) {
+      showToast({
+        type: 'error',
+        title: '发布失败',
+        content: err?.response?.data?.error || err.message || '未知错误',
+      });
+    }
   };
 
   const priceChartData = Array(7).fill(null).map((_, i) => {
@@ -136,7 +195,7 @@ export default function Market() {
     };
   });
 
-  const suggestedRange: [number, number] = (() => {
+  const suggestedRange: [number, number] = priceSuggestion?.suggestedRange as [number, number] || (() => {
     const basePrice = { common: 100, rare: 500, epic: 2000, legendary: 10000 }[publishRarity];
     return [Math.floor(basePrice * 0.8), Math.floor(basePrice * 1.2)];
   })();
@@ -160,6 +219,26 @@ export default function Market() {
           </div>
         </div>
       </motion.div>
+
+      {activeEvents.length > 0 && (
+        <motion.div variants={itemVariants}>
+          {activeEvents.map((event: any) => (
+            <div
+              key={event.id}
+              className="p-4 rounded-xl bg-dream-red/10 border border-dream-red/30 flex items-center gap-3"
+            >
+              <span className="text-2xl">🌊</span>
+              <div className="flex-1">
+                <p className="font-bold text-dream-red">{event.name}</p>
+                <p className="text-sm text-dream-light/70">{event.description}</p>
+              </div>
+              <span className="text-xs text-dream-light/50">
+                影响: {event.effectValue}%
+              </span>
+            </div>
+          ))}
+        </motion.div>
+      )}
 
       <motion.div variants={itemVariants}>
         <div className="flex gap-2 bg-dream-purple/10 p-1 rounded-xl inline-flex">
@@ -251,10 +330,19 @@ export default function Market() {
             {filteredItems.map((item) => (
               <motion.div
                 key={item.id}
-                whileHover={{ scale: 1.02, y: -4 }}
+                whileHover={{ scale: item.status === 'active' ? 1.02 : 1, y: item.status === 'active' ? -4 : 0 }}
                 whileTap={{ scale: 0.98 }}
+                className={item.status !== 'active' ? 'opacity-60' : ''}
               >
                 <GlassCard className="p-4 relative">
+                  {item.status !== 'active' && (
+                    <div className="absolute inset-0 flex items-center justify-center z-20 bg-dream-dark/50 backdrop-blur-sm rounded-2xl">
+                      <span className="px-4 py-2 bg-dream-red/20 border border-dream-red/50 rounded-xl text-dream-red font-bold">
+                        已售出
+                      </span>
+                    </div>
+                  )}
+
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -300,9 +388,9 @@ export default function Market() {
                     <MagicButton
                       size="sm"
                       onClick={() => handleBuy(item)}
-                      disabled={item.sellerId === 'player-1'}
+                      disabled={item.sellerId === 'player-1' || item.status !== 'active' || isLoading}
                     >
-                      {item.sellerId === 'player-1' ? '我的' : '购买'}
+                      {item.sellerId === 'player-1' ? '我的' : item.status !== 'active' ? '已售出' : '购买'}
                     </MagicButton>
                   </div>
                 </GlassCard>

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { Guild, GuildMember, GuildBuilding } from '../../shared/types';
+import { endpoints } from '../api/endpoints';
 
 interface GuildState {
   currentGuild: Guild | null;
@@ -10,6 +11,7 @@ interface GuildState {
   };
   isLoading: boolean;
   error: string | null;
+  fetchMyGuild: (playerId: string) => Promise<void>;
   setGuild: (guild: Guild | null) => void;
   updateGuild: (updates: Partial<Guild>) => void;
   setMembers: (members: GuildMember[]) => void;
@@ -20,7 +22,10 @@ interface GuildState {
     dreamTower: GuildBuilding | null;
     researchHall: GuildBuilding | null;
   }) => void;
-  upgradeBuilding: (buildingType: 'dream_tower' | 'research_hall') => void;
+  upgradeBuilding: (
+    buildingType: 'dream_tower' | 'research_hall',
+    data: { guildId: string; playerId: string; materials: number; coins: number }
+  ) => Promise<any>;
   updateBuildingExp: (
     buildingType: 'dream_tower' | 'research_hall',
     exp: number
@@ -39,6 +44,36 @@ export const useGuildStore = create<GuildState>((set, get) => ({
   },
   isLoading: false,
   error: null,
+
+  fetchMyGuild: async (playerId: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const guild = await endpoints.guild.getMyGuild(playerId);
+      if (guild) {
+        set({
+          currentGuild: guild,
+          members: guild.members || [],
+          buildings: {
+            dreamTower: guild.dreamTower || null,
+            researchHall: guild.researchHall || null,
+          },
+          isLoading: false,
+        });
+      } else {
+        set({
+          currentGuild: null,
+          members: [],
+          buildings: { dreamTower: null, researchHall: null },
+          isLoading: false,
+        });
+      }
+    } catch (err: any) {
+      set({
+        error: err?.data?.error || err.message || '获取公会信息失败',
+        isLoading: false,
+      });
+    }
+  },
 
   setGuild: (guild) => {
     if (guild) {
@@ -116,31 +151,37 @@ export const useGuildStore = create<GuildState>((set, get) => ({
 
   setBuildings: (buildings) => set({ buildings }),
 
-  upgradeBuilding: (buildingType) => {
-    const key = buildingType === 'dream_tower' ? 'dreamTower' : 'researchHall';
-    set((state) => {
-      const building = state.buildings[key];
-      if (!building) return state;
-      const newBuilding: GuildBuilding = {
-        ...building,
-        level: building.level + 1,
-        exp: 0,
-        maxExp: building.maxExp * 1.5,
-        effectValue: building.effectValue * 1.2,
-      };
-      return {
-        buildings: {
-          ...state.buildings,
-          [key]: newBuilding,
-        },
-        currentGuild: state.currentGuild
-          ? {
-              ...state.currentGuild,
-              [key]: newBuilding,
-            }
-          : null,
-      };
-    });
+  upgradeBuilding: async (buildingType, data) => {
+    set({ isLoading: true, error: null });
+    try {
+      const result = await endpoints.guild.upgradeBuilding(buildingType, data);
+
+      const key = buildingType === 'dream_tower' ? 'dreamTower' : 'researchHall';
+
+      if (result.building) {
+        set((state) => ({
+          buildings: {
+            ...state.buildings,
+            [key]: result.building,
+          },
+          currentGuild: state.currentGuild
+            ? {
+                ...state.currentGuild,
+                [key]: result.building,
+              }
+            : null,
+        }));
+      }
+
+      set({ isLoading: false });
+      return result;
+    } catch (err: any) {
+      set({
+        error: err?.data?.error || err.message || '贡献失败',
+        isLoading: false,
+      });
+      throw err;
+    }
   },
 
   updateBuildingExp: (buildingType, exp) => {

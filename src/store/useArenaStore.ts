@@ -1,20 +1,24 @@
 import { create } from 'zustand';
 import type { Battle, MatchResult, BattleSkill } from '../../shared/types';
+import { endpoints } from '../api/endpoints';
 
 interface ArenaState {
   isMatching: boolean;
+  matchId: string | null;
   matchResult: MatchResult | null;
   currentBattle: Battle | null;
   skillCooldowns: Record<string, number>;
   matchHistory: Battle[];
   isLoading: boolean;
   error: string | null;
-  startMatching: () => void;
-  stopMatching: () => void;
+  startMatching: (playerId: string, dreamId: string) => Promise<boolean>;
+  stopMatching: () => Promise<void>;
+  checkMatchStatus: () => Promise<MatchResult | null>;
   setMatchResult: (result: MatchResult | null) => void;
   setCurrentBattle: (battle: Battle | null) => void;
   updateBattle: (updates: Partial<Battle>) => void;
-  useSkill: (skillId: string, skill: BattleSkill) => void;
+  useSkill: (battleId: string, playerId: string, skillId: string) => Promise<void>;
+  fetchBattle: (battleId: string) => Promise<Battle | null>;
   updateSkillCooldown: (skillId: string, cooldown: number) => void;
   decrementCooldowns: () => void;
   addToMatchHistory: (battle: Battle) => void;
@@ -25,6 +29,7 @@ interface ArenaState {
 
 export const useArenaStore = create<ArenaState>((set, get) => ({
   isMatching: false,
+  matchId: null,
   matchResult: null,
   currentBattle: null,
   skillCooldowns: {},
@@ -32,19 +37,78 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   isLoading: false,
   error: null,
 
-  startMatching: () => {
+  startMatching: async (playerId: string, dreamId: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const result = await endpoints.arena.startMatching({ playerId, dreamId });
+      set({
+        isMatching: result.status === 'matching',
+        matchId: result.matchId,
+        matchResult: result,
+        isLoading: false,
+      });
+      return result.status === 'success';
+    } catch (err: any) {
+      set({
+        error: err?.data?.error || err.message || '匹配失败',
+        isLoading: false,
+        isMatching: false,
+      });
+      return false;
+    }
+  },
+
+  stopMatching: async () => {
+    const { matchId } = get();
+    if (matchId) {
+      try {
+        await endpoints.arena.stopMatching(matchId);
+      } catch (e) {
+        // ignore
+      }
+    }
     set({
-      isMatching: true,
+      isMatching: false,
+      matchId: null,
       matchResult: null,
-      error: null,
     });
   },
 
-  stopMatching: () => {
-    set({
-      isMatching: false,
-      matchResult: null,
-    });
+  checkMatchStatus: async () => {
+    const { matchId } = get();
+    if (!matchId) return null;
+
+    try {
+      const result = await endpoints.arena.getMatchStatus(matchId);
+
+      if (result.status === 'success') {
+        set({
+          isMatching: false,
+          matchResult: result,
+        });
+      } else if (result.status === 'timeout') {
+        set({
+          isMatching: false,
+          matchId: null,
+        });
+      }
+
+      return result;
+    } catch (err: any) {
+      set({ error: err?.data?.error || err.message });
+      return null;
+    }
+  },
+
+  fetchBattle: async (battleId: string) => {
+    try {
+      const battle = await endpoints.arena.getBattle(battleId);
+      set({ currentBattle: battle });
+      return battle;
+    } catch (err: any) {
+      set({ error: err?.data?.error || err.message });
+      return null;
+    }
   },
 
   setMatchResult: (result) => set({ matchResult: result }),
@@ -72,13 +136,15 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     }
   },
 
-  useSkill: (skillId, skill) => {
-    set((state) => ({
-      skillCooldowns: {
-        ...state.skillCooldowns,
-        [skillId]: skill.cooldown,
-      },
-    }));
+  useSkill: async (battleId: string, playerId: string, skillId: string) => {
+    try {
+      const result = await endpoints.arena.useSkill(battleId, { playerId, skillId });
+      if (result?.battle) {
+        set({ currentBattle: result.battle });
+      }
+    } catch (err: any) {
+      set({ error: err?.data?.error || err.message });
+    }
   },
 
   updateSkillCooldown: (skillId, cooldown) => {
@@ -109,6 +175,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   reset: () => {
     set({
       isMatching: false,
+      matchId: null,
       matchResult: null,
       currentBattle: null,
       skillCooldowns: {},
