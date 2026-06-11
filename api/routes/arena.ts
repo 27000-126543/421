@@ -1,10 +1,29 @@
 import { Router, type Request, type Response } from 'express'
 import { getDb, saveDb, generateId } from '../db/index.js'
-import type { Battle, BattleSkill, MatchResult, BattleLogEntry } from '../../shared/types.js'
+import type { Battle, BattleSkill, MatchResult, BattleLogEntry, Dream } from '../../shared/types.js'
 
 const router = Router()
 
-const matchQueue: Map<string, { playerId: string; dreamId: string; startTime: number }> = new Map();
+interface MatchQueueItem {
+  playerId: string;
+  dreamId: string;
+  dreamComplexity: number;
+  startTime: number;
+}
+
+interface MatchedPair {
+  battleId: string;
+  player1MatchId: string;
+  player2MatchId: string;
+  player1Id: string;
+  player2Id: string;
+}
+
+const matchQueue: Map<string, MatchQueueItem> = new Map();
+const matchedPairs: Map<string, MatchedPair> = new Map();
+
+const MAX_COMPLEXITY_DIFF = 30;
+const MATCH_TIMEOUT = 60000;
 
 router.post('/match', async (req: Request, res: Response): Promise<void> => {
   const { playerId, dreamId } = req.body;
@@ -29,21 +48,53 @@ router.post('/match', async (req: Request, res: Response): Promise<void> => {
   }
 
   const matchId = `match-${generateId()}`;
-  
-  const waitingPlayers = Array.from(matchQueue.entries()).filter(
-    ([, data]) => data.playerId !== playerId && Date.now() - data.startTime < 30000
-  );
+  const playerComplexity = dream.complexity;
 
-  if (waitingPlayers.length > 0) {
-    const [opponentMatchId, opponentData] = waitingPlayers[0];
+  let matched = false;
+  let opponentMatchId = '';
+  let opponentData: MatchQueueItem | null = null;
+
+  const validOpponents = Array.from(matchQueue.entries()).filter(([, data]) => {
+    if (data.playerId === playerId) return false;
+    if (Date.now() - data.startTime > MATCH_TIMEOUT) return false;
+    const diff = Math.abs(data.dreamComplexity - playerComplexity);
+    return diff <= MAX_COMPLEXITY_DIFF;
+  });
+
+  if (validOpponents.length > 0) {
+    validOpponents.sort((a, b) => {
+      const diffA = Math.abs(a[1].dreamComplexity - playerComplexity);
+      const diffB = Math.abs(b[1].dreamComplexity - playerComplexity);
+      return diffA - diffB;
+    });
+
+    [opponentMatchId, opponentData] = validOpponents[0];
     matchQueue.delete(opponentMatchId);
+    matched = true;
+  }
 
-    const opponent = db.data.players.find(p => p.id === opponentData.playerId);
-    const opponentDream = db.data.dreams.find(d => d.id === opponentData.dreamId);
+  if (matched && opponentData) {
+    const opponent = db.data.players.find(p => p.id === opponentData!.playerId);
+    const opponentDream = db.data.dreams.find(d => d.id === opponentData!.dreamId);
 
     if (opponent && opponentDream) {
-      const battle = await createBattle(player, opponent, dream, opponentDream, db.data.battleSkills);
+      const battle = await createBattle(
+        player, opponent,
+        dream, opponentDream,
+        db.data.battleSkills
+      );
       db.data.battles.push(battle);
+
+      const pair: MatchedPair = {
+        battleId: battle.id,
+        player1MatchId: matchId,
+        player2MatchId: opponentMatchId,
+        player1Id: playerId,
+        player2Id: opponentData.playerId,
+      };
+      matchedPairs.set(matchId, pair);
+      matchedPairs.set(opponentMatchId, pair);
+
       await saveDb();
 
       const result: MatchResult = {
@@ -66,12 +117,18 @@ router.post('/match', async (req: Request, res: Response): Promise<void> => {
     }
   }
 
-  matchQueue.set(matchId, { playerId, dreamId, startTime: Date.now() });
+  matchQueue.set(matchId, {
+    playerId,
+    dreamId,
+    dreamComplexity: playerComplexity,
+    startTime: Date.now()
+  });
 
+  const waitSeconds = Math.ceil(MATCH_TIMEOUT / 1000);
   const result: MatchResult = {
     matchId,
     status: 'matching',
-    estimatedWaitTime: 15
+    estimatedWaitTime: waitSeconds
   };
 
   res.status(200).json({
@@ -84,25 +141,35 @@ router.get('/match/:id/status', async (req: Request, res: Response): Promise<voi
   const { id } = req.params;
   const db = await getDb();
 
-  const matchData = matchQueue.get(id);
-  
-  if (!matchData) {
-    const battle = db.data.battles.find(b => 
-      b.player1Id === matchData?.playerId || b.player2Id === matchData?.playerId
-    );
-
+  const pair = matchedPairs.get(id);
+  if (pair) {
+    const battle = db.data.battles.find(b => b.id === pair.battleId);
     if (battle) {
+      const isPlayer1 = pair.player1MatchId === id;
+      const opponentId = isPlayer1 ? pair.player2Id : pair.player1Id;
+      const opponent = db.data.players.find(p => p.id === opponentId);
+
       res.status(200).json({
         success: true,
         data: {
           matchId: id,
           status: 'success',
-          battleId: battle.id
+          battleId: battle.id,
+          matchedPlayer: opponent ? {
+            id: opponent.id,
+            name: opponent.nickname,
+            avatar: opponent.avatar,
+            level: opponent.level
+          } : undefined
         }
       });
       return;
     }
+  }
 
+  const matchData = matchQueue.get(id);
+
+  if (!matchData) {
     res.status(200).json({
       success: true,
       data: {
@@ -113,7 +180,7 @@ router.get('/match/:id/status', async (req: Request, res: Response): Promise<voi
     return;
   }
 
-  if (Date.now() - matchData.startTime > 30000) {
+  if (Date.now() - matchData.startTime > MATCH_TIMEOUT) {
     matchQueue.delete(id);
     res.status(200).json({
       success: true,
@@ -125,12 +192,27 @@ router.get('/match/:id/status', async (req: Request, res: Response): Promise<voi
     return;
   }
 
+  const remaining = Math.max(0, Math.ceil((MATCH_TIMEOUT - (Date.now() - matchData.startTime)) / 1000));
+
   res.status(200).json({
     success: true,
     data: {
       matchId: id,
       status: 'matching',
-      estimatedWaitTime: Math.max(0, 30 - Math.floor((Date.now() - matchData.startTime) / 1000))
+      estimatedWaitTime: remaining
+    }
+  });
+})
+
+router.delete('/match/:id', async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
+  matchQueue.delete(id);
+  matchedPairs.delete(id);
+
+  res.status(200).json({
+    success: true,
+    data: {
+      message: 'Matching cancelled'
     }
   });
 })
@@ -290,7 +372,7 @@ async function createBattle(
   dream2: { id: string; name: string },
   skillsTemplate: BattleSkill[]
 ): Promise<Battle> {
-  const createPlayerSkills = (): BattleSkill[] => 
+  const createPlayerSkills = (): BattleSkill[] =>
     skillsTemplate.map(s => ({ ...s, id: `skill-${generateId()}`, currentCooldown: 0 }));
 
   return {

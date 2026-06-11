@@ -39,9 +39,11 @@ app.use('/api/dreams', dreamsRoutes)
 app.use('/api/arena', arenaRoutes)
 app.use('/api/market', marketRoutes)
 app.use('/api/guild', guildRoutes)
+app.use('/api/guilds', guildRoutes)
 app.use('/api/reports', reportsRoutes)
 app.use('/api/rankings', rankingsRoutes)
 app.use('/api/player', playerRoutes)
+app.use('/api/players', playerRoutes)
 
 app.use(
   '/api/health',

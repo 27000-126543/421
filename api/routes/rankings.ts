@@ -4,25 +4,21 @@ import type { RankingEntry, RankingType } from '../../shared/types.js'
 
 const router = Router()
 
-router.get('/', async (req: Request, res: Response): Promise<void> => {
-  const { type = 'points', limit = 20 } = req.query;
-  const db = await getDb();
-
-  const rankingType = type as RankingType;
+function getRankings(db: any, type: RankingType, limit: number): RankingEntry[] {
   const rankings: RankingEntry[] = [];
 
   const playersWithValue = db.data.players.map(player => {
     let value = 0;
 
-    if (rankingType === 'favorite') {
+    if (type === 'favorite') {
       value = db.data.dreams
-        .filter(d => d.ownerId === player.id)
-        .reduce((sum, d) => sum + d.favoriteCount, 0);
-    } else if (rankingType === 'points') {
+        .filter((d: any) => d.ownerId === player.id)
+        .reduce((sum: number, d: any) => sum + (d.favoriteCount || d.favoritesCount || 0), 0);
+    } else if (type === 'points') {
       value = player.arenaPoints;
-    } else if (rankingType === 'contribution') {
-      value = db.data.guilds.reduce((sum, guild) => {
-        const member = guild.members.find(m => m.playerId === player.id);
+    } else if (type === 'contribution') {
+      value = db.data.guilds.reduce((sum: number, guild: any) => {
+        const member = guild.members.find((m: any) => m.playerId === player.id);
         return sum + (member?.contribution || 0);
       }, 0);
     }
@@ -30,9 +26,9 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
     return { player, value };
   });
 
-  playersWithValue.sort((a, b) => b.value - a.value);
+  playersWithValue.sort((a: any, b: any) => b.value - a.value);
 
-  playersWithValue.slice(0, Number(limit)).forEach((item, index) => {
+  playersWithValue.slice(0, Number(limit)).forEach((item: any, index: number) => {
     rankings.push({
       rank: index + 1,
       playerId: item.player.id,
@@ -43,6 +39,16 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
     });
   });
 
+  return rankings;
+}
+
+router.get('/', async (req: Request, res: Response): Promise<void> => {
+  const { type = 'points', limit = 20 } = req.query;
+  const db = await getDb();
+
+  const rankingType = type as RankingType;
+  const rankings = getRankings(db, rankingType, Number(limit));
+
   res.status(200).json({
     success: true,
     data: {
@@ -50,6 +56,20 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
       rankings,
       updatedAt: new Date().toISOString()
     }
+  });
+})
+
+router.get('/:type', async (req: Request, res: Response): Promise<void> => {
+  const { type } = req.params;
+  const { limit = 20 } = req.query;
+  const db = await getDb();
+
+  const rankingType = type as RankingType;
+  const rankings = getRankings(db, rankingType, Number(limit));
+
+  res.status(200).json({
+    success: true,
+    data: rankings
   });
 })
 
